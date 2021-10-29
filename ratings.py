@@ -1,5 +1,8 @@
 """Restaurant rating lister."""
 
+import sys
+import random
+
 
 filename = 'scores.txt'
 data = open(filename)
@@ -23,15 +26,20 @@ def print_restaurants_alphabetically(restaurant_ratings_dict):
         print(f"{restaurant} is rated at {rating}.")
 
 
-def ask_user_correct_input_Y_N():
+def ask_user_choice():
     """
-    make sure user inputs Y or N
+    make sure user inputs 1, 2, or 3
     """
     while True:
-        add_restaurant = input("Do you want to add a restaurant to the list? Y/N ").upper()
+        print("""Would you like to
+    [1] add a restaurant rating
+    [2] update a random restaurant rating
+    [3] print all restaurant ratings
+    [4] quit""")
+        user_choice = input("> ")
 
-        if add_restaurant == "Y" or add_restaurant == "N":
-            return add_restaurant
+        if user_choice in ["1", "2", "3", "4"]:
+            return user_choice
         
         print("Invalid input. Please try again.")
 
@@ -58,17 +66,24 @@ def add_restaurant_rating(restaurant_ratings_dict):
     parameter:
         - restaurant_ratings_dict (dictionary)
     """
-    
-    add_restaurant = ask_user_correct_input_Y_N()
-    
-    if add_restaurant == "Y":
-        restaurant = input("What restaurant would you like to add? ").capitalize()
-        rating = validate_new_score()
-        restaurant_ratings_dict[restaurant] = rating
-    elif add_restaurant == "N":
-        print("Good bye")
+    while True:
+        user_choice = ask_user_choice()
+        
+        if user_choice == "1":
+            restaurant = input("What restaurant would you like to add? ").title()
+            rating = validate_new_score()
+            restaurant_ratings_dict[restaurant] = rating
+        elif user_choice == "2":
+            restaurant = random.choice(list(restaurant_ratings_dict.keys()))
+            print(f"Have you been to {restaurant}?")
+            rating = validate_new_score()
+            restaurant_ratings_dict[restaurant] = rating
+        elif user_choice == "3":
+            print_restaurants_alphabetically(restaurant_ratings_dict)
+        elif user_choice == "4":
+            sys.exit("Good bye.")
 
-    print_restaurants_alphabetically(restaurant_ratings_dict)
+        
 
 
 add_restaurant_rating(restaurant_ratings)
