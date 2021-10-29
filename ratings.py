@@ -1,18 +1,20 @@
 """Restaurant rating lister."""
 
+import os
 import sys
 import random
 
 
-filename = 'scores.txt'
-data = open(filename)
+def load_in_the_data(filename):
+    data = open(filename)
+    restaurant_ratings = {}
 
-restaurant_ratings = {}
-
-for line in data:
-    line = line.rstrip().split(":")
-    restaurant_name, rating = line
-    restaurant_ratings[restaurant_name] = rating
+    for line in data:
+        line = line.rstrip().split(":")
+        restaurant_name, rating = line
+        restaurant_ratings[restaurant_name] = rating
+    
+    return restaurant_ratings
 
 
 def print_restaurants_alphabetically(restaurant_ratings_dict):
@@ -28,17 +30,18 @@ def print_restaurants_alphabetically(restaurant_ratings_dict):
 
 def ask_user_choice():
     """
-    make sure user inputs 1, 2, or 3
+    make sure user inputs 1, 2, 3, or 4
     """
     while True:
         print("""Would you like to
     [1] add a restaurant rating
     [2] update a random restaurant rating
     [3] print all restaurant ratings
-    [4] quit""")
+    [4] select new file
+    [5] quit""")
         user_choice = input("> ")
 
-        if user_choice in ["1", "2", "3", "4"]:
+        if user_choice in ["1", "2", "3", "4", "5"]:
             return user_choice
         
         print("Invalid input. Please try again.")
@@ -81,9 +84,20 @@ def add_restaurant_rating(restaurant_ratings_dict):
         elif user_choice == "3":
             print_restaurants_alphabetically(restaurant_ratings_dict)
         elif user_choice == "4":
+            restaurant_ratings_dict = select_data_source()
+        elif user_choice == "5":
             sys.exit("Good bye.")
 
-        
+
+def select_data_source():
+    files_to_present_to_user = []
+    for file in os.listdir():
+        if ".txt" in file:
+            files_to_present_to_user.append(file)
+    filename = input(f"Which Data Source would you like to use? {files_to_present_to_user}")
+    restaurant_ratings = load_in_the_data(filename)
+    return restaurant_ratings
 
 
+restaurant_ratings = select_data_source()
 add_restaurant_rating(restaurant_ratings)
